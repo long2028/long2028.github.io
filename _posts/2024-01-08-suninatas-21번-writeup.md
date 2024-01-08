@@ -1,5 +1,5 @@
 ---
-title: suninatas 14번 writeup
+title: suninatas 21번 writeup
 date: 2024-01-08 16:00:10 +0900
 categories: [Writeup, Forensic]
 tags: [john-the-riper]
@@ -34,6 +34,8 @@ jpg 파일의 해더 시그니처는 FF D8 FF E1이며, 푸터 시그니처는 F
 너무 많다. hxd 편집기 기능의 한계로 한땀한땀 이것들을 각각의 이미지로 분리해줘야 하는데 따로 코드를 짜야 하나 싶었다.
 
 ![4](/assets/img/posts/2024-01-06-bunri.jpg)
+
+
 마지막 시그니처 블록만 따로 떼어 봤는데 원본 이미지와 자의 위치가 미묘하게 다른 것 빼곤 답을 모르겠는건 여전하다.
 
 ### WinHex 사용
