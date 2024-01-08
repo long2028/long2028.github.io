@@ -17,7 +17,7 @@ http://suninatas.com/challenge/web14/web14.asp
 ### 살펴보기
 문제의 첨부파일(tar)를 다운받아 압축 해제를 해 보면
 
-![1](/assets/img/posts/2024-01-06-evidencs.png)
+![1](/assets/img/posts/2024-01-06-evidences.png)
 
 shadow, password 파일이 보인다.
 - password  
