@@ -2,7 +2,7 @@
 title: suninatas 21번 writeup
 date: 2024-01-08 16:00:10 +0900
 categories: [Writeup, Forensic]
-tags: [john-the-riper]
+tags: [WinHex]
 render_with_liquid: false
 ---
 
@@ -16,7 +16,7 @@ Is it a Puzzle?
 ## 풀이
 
 ### 살펴보기
-문제를 봤을 때 가장 먼저 보이는 건 플래그가 출력되있는 듯한 모니터를 자로 가려놓은 모습이다.
+먼저 보이는 건 플래그가 출력돼있는 듯한 모니터를 자로 가려놓은 모습이다.
 
 ![1](/assets/img/posts/2024-01-06-what.png)
 
