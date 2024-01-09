@@ -1,0 +1,62 @@
+---
+title: volatility3 사용하기
+date: 2024-01-09 00:22:10 +0900
+categories: [Forensic, tools]
+tags: [volatility]
+render_with_liquid: false
+---
+
+## 개요
+Volatility는 포렌식에서 메모리 덤프를 분석하는 데 사용하는 오픈 소스 프로그램이다.
+나도 잘 아는 것은 아니지만 메모리 분석 도구의 표준이라고 불릴 정도로 자주 사용되는 프로그램이라 하고,
+메모리 덤프를 분석해야 하는 문제를 풀 기회가 생겨 이번에 설치해보기로 했다.
+
+현재 volatility는 곧 지원이 종료된 예전 파이썬 대신 파이썬 3로 전환한 volatility3 로 개발과 지원이 이루어지고 있다.
+
+메모리 덤프 문제를 풀기 위해 각종 라이트업을 찾아 보니 2018년에 업데이트가 종료된 이전 버전의 volatility를 사용한 풀이가 대부분이여서 volatility 3를 설치하고 기본적인 사용 방법을 알아보고자 한다.
+
+<b>Python3가 설치된 Window10을 기준</b>으로 작성하였습니다.
+
+## 설치 과정
+
+1. github에서 volatility 3의 공식 리포지토리를 클론한다.  
+
+    ```shell
+     git clone https://github.com/volatilityfoundation/volatility3.git 
+    ```
+
+2. clone된 폴더 안에서 종속 모듈 설치 후 빌드.  
+
+    ```shell
+    pip3 install -r requirements-minimal.txt
+
+    python3 setup.py build
+    python3 setup.py install    
+    ```
+
+    모든 기능을 사용하고 싶다면 아래의 명령어로 추가 모듈들을 설치하자.
+
+    ```shell
+    pip3 install -r requirements.txt
+    ```
+
+3. 설치 확인
+
+    ```shell
+    python3 vol.py -h
+    ```
+    위 명령을 실행하여 Volatility가 정상적으로 설치되었는지 확인할 수 있다.
+
+
+
+## 사용법
+
+Dumpit이나 FTK imager로 생성한 메모리 덤프가 필요하다.
+> 덤프뜨기 전에 BIOS의 가상화 환경이 꺼져 있는지 확인하자. 켜져 있으면 블루스크린이 뜬다.
+{: .prompt-info}
+
+덤프 파일을 생성했으면, 분석을 위한 기본적인 플러그인들을 테스트 해 보자.
+
+### windows.pslist(linux.pslist)
+
+덤프 당시 실행중이었던 프로세스 목록을 출력한다.
