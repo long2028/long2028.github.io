@@ -30,8 +30,8 @@ Volatility는 포렌식에서 메모리 덤프를 분석하는 데 사용하는 
     ```shell
     pip3 install -r requirements-minimal.txt
 
-    python3 setup.py build
-    python3 setup.py install    
+    python setup.py build
+    python setup.py install    
     ```
 
     모든 기능을 사용하고 싶다면 아래의 명령어로 추가 모듈들을 설치하자.
@@ -43,7 +43,7 @@ Volatility는 포렌식에서 메모리 덤프를 분석하는 데 사용하는 
 3. 설치 확인
 
     ```shell
-    python3 vol.py -h
+    python vol.py -h
     ```
     위 명령을 실행하여 Volatility가 정상적으로 설치되었는지 확인할 수 있다.
 
@@ -57,6 +57,36 @@ Dumpit이나 FTK imager로 생성한 메모리 덤프가 필요하다.
 
 덤프 파일을 생성했으면, 분석을 위한 기본적인 플러그인들을 테스트 해 보자.
 
+### windows.info(linux.info)
+
+보통 분석 시작 시 사용하는 명령어, 분석 대상 시스템의 포괄적인 정보를 출력한다.
+찾을 수 있는 정보에는  
+
+또한 <pre>--save-config</pre> 옵션을 지정하여 이후 분석 과정에서 같은 작업을 반복하지 않도록 정보를 저장해 둘 수 있다.
+
+옵션을 포함하여 사용한 명령은 다음과 같다.
+```shell
+python vol.py --save-config config.json -f <파일 경로> windows.info
+```
+
+이후 다른 명령에서 생성한 파일을 <pre>-c config.json</pre> 과 같은 구문을 통해 불러올 수 있다.
+
 ### windows.pslist(linux.pslist)
 
 덤프 당시 실행중이었던 프로세스 목록을 출력한다.
+
+### windows.cmdline
+
+커맨드라인 기록을 출력한다.
+
+### windows.netscan
+
+네트워크 연결 상태를 ip, 포트, pid 정보를 포함하여 상세히 출력한다.
+
+### windows.filescan
+
+시스템의 파일 목록을 오프셋과 함께 확인할 수 있다.
+
+### windows.dumpfiles
+
+위의 명령을 통해 알아낸 오프셋을 기반으로 특정 파일을 추출할 수 있다.
