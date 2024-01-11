@@ -63,13 +63,14 @@ Dumpit이나 FTK imager로 생성한 메모리 덤프가 필요하다.
 찾을 수 있는 정보에는 운영체제 커널 로드 주소, 페이지 디렉토리 기본 주소, 디버그 심볼 파일, 운영체제 버전, 프로세서, 실행 파일 정보 등이 있다. 
 
 덤프 파일의 용량이 꽤 크면 분석시간 또한 길어지는데, <pre>--save-config</pre> 옵션을 지정하여 이후 분석 과정에서 같은 작업을 반복하지 않도록 정보를 저장해 둘 수 있다.
+또한 <kbd>--save-config</kbd> 옵션을 지정하여 이후 분석 과정에서 같은 작업을 반복하지 않도록 정보를 저장해 둘 수 있다.
 
 옵션을 포함하여 사용한 명령은 다음과 같다.
 ```shell
 python vol.py --save-config config.json -f <파일 경로> windows.info
 ```
 
-이후 다른 명령에서 생성한 파일을 <pre>-c config.json</pre> 과 같은 구문을 통해 불러올 수 있다.
+이후 다른 명령에서 생성한 파일을 <kbd>-c config.json</kbd> 과 같은 구문을 통해 불러올 수 있다.
 
 ### windows.pslist(linux.pslist)
 
