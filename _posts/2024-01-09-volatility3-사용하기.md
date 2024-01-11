@@ -90,3 +90,7 @@ python vol.py --save-config config.json -f <파일 경로> windows.info
 ### windows.dumpfiles
 
 위의 명령을 통해 알아낸 오프셋을 기반으로 특정 파일을 추출할 수 있다.
+
+## 참조 문서
+
+https://book.hacktricks.xyz/generic-methodologies-and-resources/basic-forensic-methodology/memory-dump-analysis/volatility-cheatsheet

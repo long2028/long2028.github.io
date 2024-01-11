@@ -99,4 +99,58 @@ python vol.py -f <파일 경로> windows.netstat
 
 ### 파일명 찾기
 
-해당 덤프파일의 파일명은
+해커가 기밀문서를 열람하기 위해 사용한 프로그램을 먼저 확인해 보자.
+
+```shell
+python vol.py -f <파일 경로> windows.pslist
+```
+
+![3](/assets/img/posts/2024-01-11-pslist.png)
+
+프로세스 중에 눈에 띄는 것은 CMD와 메모장이다. 이것만으론 파일 내용을 알아낼 수 없으니 커맨드라인 기록을 살펴보자.
+
+```shell
+python vol.py -f <파일 경로> windows.cmdline
+```
+
+![4](/assets/img/posts/2024-01-11-cmdline.png)
+
+기록 중에 notepad 명령으로 <kbd>C:\Users\training\Desktop\SecreetDocumen7.txt</kbd> 파일을 연 행동이 보인다. 정황상 기밀문서의 파일명은 <b>SecreetDocumen7.txt</b> 일 것이다.
+
+### 문서 추출하기
+
+기밀 문서의 내용을 확인하기 위해 해당 파일을 추출하자.  
+먼저 기밀 문서의 오프셋을 확인해야 한다.
+
+```shell
+python vol.py -f <파일 경로> windows.filescan | findstr "Secreet"
+```
+
+그런데, 파이썬 버전 문제인지 findstr 파이프라인을 추가할 때 계속 인코딩 오류가 발생해서 명령이 정상적으로 실행되지 않았다.
+
+이건 volattility 자체의 오류가 아니고 파이썬의 기본 인코딩이 UTF-8로 지정되어 있지 않아서 발생하는 오류이므로, <kbd>set PYTHONUTF8=1</kbd> 명령어로 한글을 제대로 인식할 수 있게 설정해 두자.
+
+실행 화면은 다음과 같다.
+
+![5](/assets/img/posts/2024-01-11-filescan.png)
+
+확인된 오프셋은 "0x3df2ddd8" 이다.
+
+다음 명령으로 파일을 추출한다.
+
+```shell
+python vol.py -o <추출될 파일 경로> -f <파일 경로> windows.dumpfiles --physaddr 0x3df2ddd8
+```
+
+physaddr 옵션에서 추출할 파일의 오프셋을 지정하고, o 옵션에서 추출될 파일의 경로를 잡아준다.
+정상적으로 추출되었다면 어떤 파일이 추출되었는지 커맨드라인에서 확인할 수 있다.
+
+![6](/assets/img/posts/2024-01-11-hitxt.png)
+
+추출된 파일을 HxD로 열어 보니 친절한 안내문과 함께 키 값을 얻을 수 있었다.
+
+![7](/assets/img/posts/2024-01-11-key.png)
+
+### 마무리
+
+문제의 설명처럼 1번답 + 2번답 + 3번답을 연결한 다음 MD5로 암호화하고, 이걸 소문자로 변환하면 문제 해결!
