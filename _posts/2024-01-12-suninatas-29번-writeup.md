@@ -63,4 +63,62 @@ autopsy의 <kbd>file search by attribute</kbd> 기능으로 "hosts" 키워드를
 
 첫 번째 키값 확인!
 
-### 두 번
+### 키로거 찾기
+
+문제 egg 파일에는 가상머신의 스냅샷이 첨부되어 있다, 키로거는 캡쳐 당시에도 사용중이였을 가능성이 높기 때문에 먼저 첨부되어 있던 Snapshot 메모리 덤프를 사용하기로 했다.  
+
+volatlity의 다음 명령을 사용했다.
+```shell
+python vol.py -f <파일 경로> windows.psscan
+```
+
+![4](/assets/img/posts/2024-01-12-psscan.png)
+
+하지만 프로세서의 이름만으론 키로거를 구분짓기는 어려웠다.
+추가적인 정보를 얻기 위해 Autopsy의 분석 결과를 확인하던 도중, 최근 사용한 문서에서 수상한 경로의 폴더를 발견했다.
+
+하위 폴더를 살펴보면 패스워드를 입력하는 화면을 캡쳐한 이미지와 프로세스의 상태 정보를 확인하는 화면 이미지를 확인할 수 있었다.
+
+volatility로 알아냈던 사용중인 프로세스에서 비슷한 이름을 찾아 보니, v1tvr0.exe가 보였다.
+정황상 해당 프로세스가 키로거일 가능성이 높아 보인다.
+
+v1tvr0.exe의 절대 경로가 두번째 키 값이다.
+
+### index.dat 확인
+
+Windows7 에선 <b>index.dat</b>에 웹 사용 정보가 모두 기록된다.
+
+자세한 정보는 [잘 정리된 블로그](http://forensic-proof.com/archives/4004)가 있으니 참고 바란다.
+
+다만, windows7 이후론 새로운 웹 캐시 파일인 WebCasheV.dat가 있으니 다른 문제를 풀 땐 주의하자.(해당 문제와는 관계 없다.)
+
+Autopsy에선 이 index.dat를 종합하여 Web History로 분류해 사용 기록을 검색할 수 있는 기능이 있지만, 영 미덥지 않다.
+
+원하는 index.dat를 추출하여 따로 분석 프로그램을 사용하는 것이 더 확실하다.
+
+웹 파일 다운로드 기록은 <kbd>%APPDATA%\Microsoft\Windows\IEDownloadHistory\index.dat</kbd> 경로의 index.dat에 기록되는 것이 일반적이다.
+
+파일을 검색해 보니 IEDownloadHistory에 있는 index.dat를 발견하였고, 이를 추출하였다.
+
+![5](/assets/img/posts/2024-01-12-findyou.png)
+
+index.dat 분석에 사용한 프로그램은 Index.dat Analyzer 이다.
+하지만, 생각했던 것과 달리 정확히 어떤 파일명을 다운받았는지를 확인할 수 없어 웹 캐시를 담은 인덱스를 검색해 보았다.
+
+Content.IE5의 index.dat를 추출해 indexdat analyzer로 분석해 보니 각종 사이트의 방문 기록과 spy-keylogger 파일을 다운받은 기록이 나타났다.
+
+![6](/assets/img/posts/2024-01-12-logfind.png)
+
+해당 파일을 다운받은 시각은 2016-05-24_04:25:06 이다.
+
+### 키로거를 통해서 알아내고자 한 내용은?
+
+아까 발견했던 키로거가 저장된 폴더에 키로거가 남긴 로그 파일들을 확인해보면 될 것이다.
+
+각종 사진들이 들어있는 폴더는 너무 많으니 패스하고, z1.dat라는 수상한 파일을 확인해 보니 키 값이 적혀 있었다.
+
+![6](/assets/img/posts/2024-01-12-lastkey.png)
+
+### 마무리
+
+1~4번까지의 모든 답을 찾았다. 답들을 조합해서 MD5로 해시한 다음, 소문자로 바꿔 주면 문제 해결!
