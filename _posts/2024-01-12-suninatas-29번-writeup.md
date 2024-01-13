@@ -88,7 +88,7 @@ v1tvr0.exe의 절대 경로가 두번째 키 값이다.
 
 Windows7 에선 <b>index.dat</b>에 웹 사용 정보가 모두 기록된다.
 
-자세한 정보는 [잘 정리된 블로그](http://forensic-proof.com/archives/4004)가 있으니 참고 바란다.
+자세한 정보는 [잘 정리된 블로그](https://forensic-proof.com/archives/4004)가 있으니 참고 바란다.
 
 다만, windows7 이후론 새로운 웹 캐시 파일인 WebCasheV.dat가 있으니 다른 문제를 풀 땐 주의하자.(해당 문제와는 관계 없다.)
 
