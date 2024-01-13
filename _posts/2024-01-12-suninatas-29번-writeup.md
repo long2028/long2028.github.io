@@ -28,7 +28,7 @@ render_with_liquid: false
 문제에는 3.7GB의 확장자가 없는 파일이 첨부되어 있다.
 먼저 어떤 파일인지 확인해보기 위해 hxd로 파일을 열어 보았다.
 
-![1](/assets/img/posts/2024-01-12-hxd.png)
+![11](/assets/img/posts/2024-01-12-hxd.png)
 
 EGGA라는 처음 보는 문자열이 보이는데, 각종 헤더 시그니처 테이블을 살펴 보았지만 어떤 파일인지 알 수가 없었다...
 gpt에게 물어 보니 EGGA는 EGG 압축파일의 확장자일 가능성이 있다고 한다. 왜 시그니처 테이블에는 없는 건지 모르겠지만, 일단 확장자를 바꾸고 파일을 열어 보았다.
@@ -117,7 +117,7 @@ Content.IE5의 index.dat를 추출해 indexdat analyzer로 분석해 보니 각�
 
 각종 사진들이 들어있는 폴더는 너무 많으니 패스하고, z1.dat라는 수상한 파일을 확인해 보니 키 값이 적혀 있었다.
 
-![6](/assets/img/posts/2024-01-12-lastkey.png)
+![7](/assets/img/posts/2024-01-12-lastkey.png)
 
 ### 마무리
 
