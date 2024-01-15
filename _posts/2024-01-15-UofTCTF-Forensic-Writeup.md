@@ -137,7 +137,7 @@ readme에는 해당 PC의 IoCs(Indicators of Compromise, 침해 지표)를 찾�
     시스템에서 ExecutionPolicy는 기본적으로 Restricted(:Undefined) 상태이며, Microsoft에서 서명한 일부 ps1 파일을 제외하곤 전부 실행을 거부한다.  
     해당 정책 설정으로 일단 ps1 파일 실행이 가능해졌다.
 
-3. update.ps1 의 가명 설정
+3. update.ps1 의 가명 설정  
     "C:\Windows\Web\Wallpaper\Theme2\update.ps1" 경로의 파일을 "UpdateSystem"으로 가명 설정했다.  
     바탕화면 테마가 저장되는 폴더에 있는 ps1 파일이 있는 것도 이상한데, updatesystem으로 명령 설정하는 것은 더욱 이상하다.  
 
