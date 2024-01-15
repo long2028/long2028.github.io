@@ -91,8 +91,91 @@ pdf의 텍스트를 추출해 txt 파일로 변환해 주는 [사이트](https:/
 
 첫 번째 루프 밑에 중단점을 넣고 v9를 조사식으로 검색해 보니 아니나 다를까 플래그가 튀어나왔다.
 
+## Hourglass
+
+![8](/assets/img/posts/2024-01-15-hourglass.png)
+
+> No EDR agent once again, we imaged this workstation for you to find the evil !
+
+### 풀이
+구글 드라이브 링크로 10GB 가량의 ZIP 파일이 첨부되어 있다.  
+zip 안에는 vm 패키지 파일(.ova)와 어떤 해시값으로 보이는 txt문서가 있다.  
+
+![8](/assets/img/posts/2024-01-15-inzip.png)
+
+txt 파일은 뭘 의미하는지 파악하기 힘드니 먼저 vm을 그대로 설치 해 보았다.
+
+VMware Workstation 하이퍼바이저 환경에서 설치된 vmdk를 부팅하려고 시도했지만 계속 실패했다.  
+부팅할 때 마다 오류 메시지가 계속 달라지고 바이오스 진입도 제대로 먹히지 않아 실패 원인이 뭔지 파악하기 힘들었다.  
+ftk imager로 열어봤을 땐 파일시스템이 정상적으로 확인되는것을 보아 디스크 암호화나 MBR 손상은 아닌 듯 한데... 이걸 어떻게 고쳐야 할지 감이 오지 않았다.
+
+결국 파일시스템은 제대로 인식이 된다는 점에서 착안해 vmdk 파일을 E01으로 통째로 이미징해 autopsy에서 분석을 진행하기로 결정했다.  
+
+아마 정석적인 풀이 방법은 첨부된 txt에 적힌 해시값으로 뭔가 고치는 것이 아니였을까?? 사실 잘 모르겠다 ㅎㅎ  
+
+![8](/assets/img/posts/2024-01-15-userfind.png)
+
+먼저 컴퓨터 사용자들 중 "analyst"의 바탕화면에서 가짜 플래그 파일과 readme 파일을 발견했다.  
+readme에는 해당 PC의 IoCs(Indicators of Compromise, 침해 지표)를 찾으라는 내용이 적혀 있었는데, 원래 찾으려던 게 그거라 큰 도움은 되지 않는 듯 하다.
+
+여러 로그 파일을 분석해 보는 중 ConsoleHost_history.txt 에서 유의미한 징후를 찾았다.
+
+> ConsoleHost_history.txt  
+사용자가 PowerShell 세션 동안 실행한 명령어의 기록이 포함되어 있는 로그 문서.
+{: .prompt-info}
+
+![8](/assets/img/posts/2024-01-15-consolehis.png)
+
+문서에서 주목할만한 내용은 다음과 같다.
+
+1. 타임스탬프 조작  
+    stomp_time.exe라는 프로그램을 사용하여 new.txt 의 타임스탬프를 조작한 기록이 나타났다. 
+    하지만 색인에서 new.txt라는 파일은 생성 기록을 제외하곤 찾을 수 없었다.
+
+2. RemoteSigned 정책 설정  
+    원격 시스템에서 다운받은 스크립트는 실행에 서명이 필요하고, 로컬 시스템에서 생성한 스크립트는 서명 없이도 실행이 가능해진다.  
+    시스템에서 ExecutionPolicy는 기본적으로 Restricted(:Undefined) 상태이며, Microsoft에서 서명한 일부 ps1 파일을 제외하곤 전부 실행을 거부한다.  
+    해당 정책 설정으로 일단 ps1 파일 실행이 가능해졌다.
+
+3. update.ps1 의 가명 설정
+    "C:\Windows\Web\Wallpaper\Theme2\update.ps1" 경로의 파일을 "UpdateSystem"으로 가명 설정했다.  
+    바탕화면 테마가 저장되는 폴더에 있는 ps1 파일이 있는 것도 이상한데, updatesystem으로 명령 설정하는 것은 더욱 이상하다.  
+
+autopsy의 <kbd>file search by attribute</kbd> 색인 기능으로 해당 파일을 검색했다.
+
+![8](/assets/img/posts/2024-01-15-1flag.png)
+
+축하 메시지와 파일 아래쪽의 IEX 명령이 보인다. 해당 명령을 살펴보면,  
+https://somec2attackerdomain.com/chrome.exe 에서 파일을 다운로드해 즉시 실행하는 명령이다.  
+이건 침해 지표로 판단하기에 충분해 보인다.
+
+위쪽 스크립트는 'WowMadeitthisfar' 문자열을 $String_Key 변수에 저장하고, $chars 변수의 문자열과 xor 연산하여 resultArray를 만드는 내용이다.
+
+해당 스크립트를 그대로 실행하면 동작이 되지 않는데, Powershell에선 배열과 배열을 bxor 했을때 각 요소를 따로 연산해주지 않기 때문이다.  
+
+배열의 각 요소를 순환하며 개별적으로 연산하는 스크립트를 추가하였다. 전체 스크립트는 아래와 같다.
+
+```shell
+$String_Key = 'W0wMadeitthisfar'
+$keyAscii = $String_Key.ToCharArray() | ForEach-Object { [int][char]$_ }
+
+$chars = 34, 95, 17, 57, 2, 16, 3, 18, 68, 16, 12, 54, 4, 82, 24, 45, 35, 0, 40, 63, 20, 10, 58, 25, 3, 65, 0, 20
+
+$resultArray = for ($i = 0; $i -lt $chars.Length; $i++) {
+    $chars[$i] -bxor $keyAscii[$i % $keyAscii.Length]
+}
+
+ehco $resultArray
+```
+![8](/assets/img/posts/2024-01-15-calflag.png)
+
+resultArray의 값을 아스키 코드로 변환하면 플래그가 나온다.
+
 ## No grep
 
+![8](/assets/img/posts/2024-01-15-grep.png)
 
+> Use the VM from Hourglass to find the 2nd flag on the system!
 
-## Hourglass
+### 풀이
+Hourglass 문제의 VM을 활용하여 2번째 플래그를 찾는 것이 목표이다.
