@@ -179,3 +179,43 @@ resultArray의 값을 아스키 코드로 변환하면 플래그가 나온다.
 
 ### 풀이
 Hourglass 문제의 VM을 활용하여 2번째 플래그를 찾는 것이 목표이다.
+
+현재까지 알아낸 주요 정보는 analyst 사용자가 update.ps1 스크립트를 작성하여  
+위험 파일로 의심되는 https://somec2attackerdomain.com/chrome.exe 을 원격에서 실행하고자 시도했다는 것이다.  
+이에 착안하여 update.ps1을 autopsy에서 키워드 서치를 통해 검색해 보았다.
+
+그러자 기존에 확인했던 ConsoleHost_history.txt와 함께 WebCacheV01.dat가 색인되었다.
+
+> WebCache2V01.dat
+windows8 이후로 사용자의 모든 웹브라우저 히스토리를 기록하는 로그 문서  
+여러 개의 테이블로 나눠져 있으며 열람하기 위해 전용 데이터베이스 뷰어가 필요하다.
+{: .prompt-info}
+
+WebCache2V01.dat를 열람하기 위해 ESEDatabaseView를 사용했다.
+
+[NirSoft - ESEDatabaseView](https://www.nirsoft.net/utils/ese_database_view.html)
+
+50개 정도의 테이블이 있었는데, 이걸 일일이 순회하면서 직접 탐색을 했다.
+
+![8](/assets/img/posts/2024-01-15-webcahce.png)
+
+그중 25번 container에서 analyst 사용자의 기록을 발견했는데, 여기서 powershell.evtx와 update.ps1 에 접근한 것을 확인할 수 있었다.  
+로컬에서 웹브라우저를 통해 로컬 파일에 접근하는 경우는 실제론 잘 없겠지만, 아무튼 이런 식으로 기록이 남을 수 있다는 것은 이해했다.
+
+윈도우 이벤트로그를 분석할 때 powershell.evtx 기록이 비어 있는 상태였는데, 정황상 해당 사용자가 기록을 삭제했었던 것으로 보인다.  
+
+또 analyst가 접근한 파일엔 flag.txt(가짜 플래그 파일), readme.txt가 있었는데, 이전까지의 탐색에서 확인하지 못한 settings.txt가 눈에 띄었다.
+
+autopsy에서 settings를 검색해 보니, WebCache 로그의 경로 그대로 존재하고 있는 것을 확인했다.
+
+파일을 열어 보면...
+
+![8](/assets/img/posts/2024-01-15-findyou.png)
+
+암호화된 듯한 문자열이 있는 것을 확인할 수 있다.  
+이걸 Base64로 디코딩하면 플래그를 찾을 수 있다.
+
+## 후기
+
+다른 문제들도 찍먹해보긴 했는데, 뭔가 풀릴 듯 하면서 안풀리는게 참 아쉬웠던 것 같다.  
+다음에는 더 좋은 성적으로 마무리하고 싶다!
