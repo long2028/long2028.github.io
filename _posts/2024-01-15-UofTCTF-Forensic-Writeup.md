@@ -186,7 +186,7 @@ Hourglass 문제의 VM을 활용하여 2번째 플래그를 찾는 것이 목표
 
 그러자 기존에 확인했던 ConsoleHost_history.txt와 함께 WebCacheV01.dat가 색인되었다.
 
-> WebCache2V01.dat
+> WebCache2V01.dat  
 windows8 이후로 사용자의 모든 웹브라우저 히스토리를 기록하는 로그 문서  
 여러 개의 테이블로 나눠져 있으며 열람하기 위해 전용 데이터베이스 뷰어가 필요하다.
 {: .prompt-info}
