@@ -1,6 +1,14 @@
+---
+title: AWS(ubuntu)에 EOSIO 설치
+date: 2024-05-02 00:15:56 +0900
+categories: [Blockchain]
+tags: [EOSIO]
+render_with_liquid: false
+---
+
 # AWS(ubuntu)에 EOSIO 설치
 
-[EOSIO Guide](https://developers.eos.io/welcome/latest/getting-started-guide/local-development-environment/installing-eosio-binaries) 문서의 초기 설정에 관한 내용을 정리 해 보았다.
+[EOSIO Guide](https://developers.eos.io/welcome/latest/getting-started-guide/local-development-environment/installing-eosio-binaries) 문서의 초기 설정에 관한 내용을 정리해 보았다.
 
 처음엔 AWS 환경 내에서 설치하려고 했지만 AWS 계정 문제로 접근이 막혀서,,, 일단 로컬 가상머신(**ubuntu 20.04 sever**) 기준으로 작성하였다.
 
@@ -22,7 +30,7 @@
 
 —to-console 옵션을 통해 키를 미리 확인한다.
 
-![기본 지갑 생성](assets\img\posts\2024-05-01-AWS(ubuntu)에-EOSIO-설치\Untitled 1.png)
+![1](/assets/img/posts/2024-05-01/Untitled.png)
 
 기본 지갑 생성
 
@@ -56,7 +64,7 @@ Wallets:
 
 `cleos wallet create_key`
 
-![명령 실행 화면](assets\img\posts\2024-05-01-AWS(ubuntu)에-EOSIO-설치\Untitled 2.png)
+![2](/assets/img/posts/2024-05-01/Untitled_1.png)
 
 명령 실행 화면
 
@@ -101,7 +109,7 @@ nodeos -e -p eosio \
 
 실행 이후, 생성한 nodeos.log에서 eosio의 서명을 통해 블록이 생성되는 것을 확인할 수 있다.
 
-![tail -f nodeos.log](assets\img\posts\2024-05-01-AWS(ubuntu)에-EOSIO-설치\Untitled 2.png)
+![tail](/assets/img/posts/2024-05-01/Untitled_2.png)
 
 tail -f nodeos.log
 
@@ -111,7 +119,7 @@ tail -f nodeos.log
 
 해당 명령을 통해 가상머신에서 http 페이지를 통해 chain의 세부적인 정보를 표시하고 있음을 확인할 수 있다.
 
-![Untitled](assets\img\posts\2024-05-01-AWS(ubuntu)에-EOSIO-설치\Untitled 3.png)
+![3](/assets/img/posts/2024-05-01/Untitled_3.png)
 
 ### 개발용 계정 생성
 
@@ -119,7 +127,7 @@ tail -f nodeos.log
 
 `cleos create account <생성 주체 계정명> <생성할 계정명><key>`
 
-![Untitled](assets\img\posts\2024-05-01-AWS(ubuntu)에-EOSIO-설치\Untitled 4.png)
+![Untitled](/assets/img/posts/2024-05-01/Untitled_4.png)
 
 이 때, 새로 keosd를 연다고 default 지갑이 다시 닫혀 있을 텐데, 다시 open > unlock 명령으로 열어야 한다.
 
@@ -129,6 +137,6 @@ cleos get account <확인할 계정명>
 
 해당 명령은 특정 계정의 상태를 확인하는 데 사용된다.
 
-![Untitled](assets\img\posts\2024-05-01-AWS(ubuntu)에-EOSIO-설치\Untitled 5.png)
+![Untitled](/assets/img/posts/2024-05-01/Untitled_5.png)
 
 eosio 계정으로 생성한 alice 계정의 정보가 출력되는 것을 확인할 수 있다.
